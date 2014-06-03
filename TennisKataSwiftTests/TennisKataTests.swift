@@ -27,9 +27,11 @@ class TennisKataTests: XCTestCase {
     func testReturnExceptionWhenNoPlayers() {
         var tennisGameWithoutPlayers:TennisGame = TennisGame()
         var (score, exception) = tennisGameWithoutPlayers.player1scored()
+        XCTAssertNil(score)
         XCTAssertNotNil(exception)
         XCTAssertEqualObjects(exception!.reason, "No Player 1")
         (score, exception) = tennisGameWithoutPlayers.player2scored()
+        XCTAssertNil(score)
         XCTAssertNotNil(exception)
         XCTAssertEqualObjects(exception!.reason, "No Player 2")
     }
@@ -66,6 +68,11 @@ class TennisKataTests: XCTestCase {
     func testJacksonWinsTheGameStraight() {
         self.runFunc(self.tennisGame!.player1scored, times: 4)
         XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Jackson wins")
+    }
+    
+    func testGameEndsAfterJacksonWins() {
+        self.runFunc(self.tennisGame!.player1scored, times: 4)
+        XCTAssertEqual(self.tennisGame!.gameended, true)
     }
 
     func runFunc(function: () -> (NSString?, NSException?), times:Int) {

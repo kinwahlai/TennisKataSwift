@@ -19,6 +19,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.updategamescore()
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,10 +36,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
         field.enabled = (field.text == "")
     }
     
+    @IBAction func resetgame() {
+        self.tennisGame = TennisGame()
+        self.player1nameTextField.text=""
+        self.player2nameTextField.text=""
+        self.player1nameTextField.enabled=true
+        self.player2nameTextField.enabled=true
+        self.player1scoreButton.enabled = true
+        self.player2scoreButton.enabled = true
+        self.updategamescore()
+    }
+    
+    
     @IBAction func player1scored() {
         self.player1nameTextField.resignFirstResponder()
         self.player2nameTextField.resignFirstResponder()
         self.tennisGame.player1scored()
+        self.disableButtonsAtEndGames()
         self.updategamescore()
     }
     
@@ -46,11 +60,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.player1nameTextField.resignFirstResponder()
         self.player2nameTextField.resignFirstResponder()
         self.tennisGame.player2scored()
+        self.disableButtonsAtEndGames()
         self.updategamescore()
     }
     
     func updategamescore() {
         self.gamescore.text = self.tennisGame.currentgamescore()
+    }
+    
+    func disableButtonsAtEndGames(){
+        if self.tennisGame.gameended {
+            self.player1scoreButton.enabled = false
+            self.player2scoreButton.enabled = false
+        }
     }
     
 }
