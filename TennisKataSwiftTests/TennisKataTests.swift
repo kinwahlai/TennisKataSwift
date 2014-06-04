@@ -26,14 +26,14 @@ class TennisKataTests: XCTestCase {
     /* Why return tuple because i cant find a way to try/catch exception in swift (maybe doesnt have try/catch) */
     func testReturnExceptionWhenNoPlayers() {
         var tennisGameWithoutPlayers:TennisGame = TennisGame()
-        var (score, exception) = tennisGameWithoutPlayers.player1scored()
+        var (score, exception) = tennisGameWithoutPlayers.player2scored()
         XCTAssertNil(score)
         XCTAssertNotNil(exception)
-        XCTAssertEqualObjects(exception!.reason, "No Player 1")
-        (score, exception) = tennisGameWithoutPlayers.player2scored()
+        XCTAssertEqualObjects(exception!.reason, "Player name cannot be blank")
+        (score, exception) = tennisGameWithoutPlayers.player1scored()
         XCTAssertNil(score)
         XCTAssertNotNil(exception)
-        XCTAssertEqualObjects(exception!.reason, "No Player 2")
+        XCTAssertEqualObjects(exception!.reason, "Player name cannot be blank")
     }
     
     func testJacksonIsPlayer1AndJosephIsPlayer2() {
@@ -65,16 +65,37 @@ class TennisKataTests: XCTestCase {
         XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Thirty Forty")
     }
     
-    func testJacksonWinsTheGameStraight() {
-        self.runFunc(self.tennisGame!.player1scored, times: 4)
-        XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Jackson wins")
+    func testDeuce() {
+        self.runFunc(self.tennisGame!.player1scored, times: 3)
+        self.runFunc(self.tennisGame!.player2scored, times: 3)
+        XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Deuce")
     }
     
-    func testGameEndsAfterJacksonWins() {
-        self.runFunc(self.tennisGame!.player1scored, times: 4)
-        XCTAssertEqual(self.tennisGame!.gameended, true)
+    func testGivenDeuceJacksonHasAdvantage() {
+        self.runFunc(self.tennisGame!.player1scored, times: 3)
+        self.runFunc(self.tennisGame!.player2scored, times: 3)
+        self.tennisGame!.player1scored()
+        XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Advantage Jackson")
     }
 
+    func testJacksonWinsTheGameStraight() {
+        self.runFunc(self.tennisGame!.player1scored, times: 4)
+        XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Jackson Won")
+    }
+    
+    func testGameEndsAfterJosephWins() {
+        self.runFunc(self.tennisGame!.player2scored, times: 4)
+        XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Joseph Won")
+        XCTAssertEqual(self.tennisGame!.gameended, true)
+    }
+    
+    func testGivenDeuceJacksonWon() {
+        self.runFunc(self.tennisGame!.player1scored, times: 3)
+        self.runFunc(self.tennisGame!.player2scored, times: 3)
+        self.runFunc(self.tennisGame!.player1scored, times: 2)
+        XCTAssertEqualObjects(self.tennisGame!.currentgamescore(), "Jackson Won")
+    }
+    
     func runFunc(function: () -> (NSString?, NSException?), times:Int) {
         for i in 0..times {
             function()
