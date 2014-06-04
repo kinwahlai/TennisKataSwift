@@ -37,8 +37,8 @@ class TennisKataTests: XCTestCase {
     }
     
     func testJacksonIsPlayer1AndJosephIsPlayer2() {
-        XCTAssertEqualObjects(self.tennisGame!.player1name!, "Jackson")
-        XCTAssertEqualObjects(self.tennisGame!.player2name!, "Joseph")
+        XCTAssertEqualObjects(self.tennisGame!.player1!.name, "Jackson")
+        XCTAssertEqualObjects(self.tennisGame!.player2!.name, "Joseph")
     }
     
     func testGameStartsWithLoveAll() {
